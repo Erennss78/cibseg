@@ -9,9 +9,9 @@ import json
 import urllib.parse
 import urllib.request
 
-BASE = ""
-VICTIMA = "0706938347"
-ATACANTE = "1212121212"
+BASE = "http://127.0.0.1:8000"
+VICTIMA = "victima@portal.edu"
+ATACANTE = "atacante@mail.com"
 
 
 def post(ruta, datos):
