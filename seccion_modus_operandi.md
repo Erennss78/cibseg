@@ -40,6 +40,34 @@ Un atacante intentaría no revelar desde dónde opera, apilando capas:
 - **Identidad separada**: cuentas y correos desechables, sin reutilizar
   credenciales ni mezclar con la identidad real.
 
+### 3.1 Ofuscar vs. borrar: dos cosas distintas
+
+Es un error frecuente pensar que un mismo script "borra todo el rastro". Hay que
+distinguir dos niveles:
+
+- **Ofuscar (posible desde afuera):** lo que hace un exploit que actúa como
+  cliente HTTP (como el de esta prueba). Puede enmascarar el origen (VPN/Tor),
+  ir lento para no generar picos y mimetizar el tráfico (user-agents y horarios
+  normales). **No borra nada**, solo dificulta la atribución y la detección.
+
+- **Borrar logs (fase post-explotación):** eliminar los registros del servidor
+  requiere **haber comprometido el servidor** primero (acceso shell/root a la
+  máquina). Es un ataque **distinto y mucho más profundo** que el de reset de
+  contraseña: este último solo otorga acceso a **una cuenta de la aplicación**,
+  no al sistema operativo del servidor. Por eso el borrado de logs **no forma
+  parte** de este exploit ni de su script.
+
+- **Logs del ISP: no se pueden borrar.** Están en la infraestructura de la
+  compañía de internet, fuera del alcance del atacante. La única defensa contra
+  ellos es la **ofuscación** (que registren "conexión a un VPN" en vez del
+  ataque), nunca la eliminación.
+
+| Nivel | ¿Qué acceso requiere? | ¿El exploit de reset lo permite? |
+|---|---|---|
+| Ofuscar origen (VPN/Tor/ritmo) | Ninguno, se hace desde afuera | Sí |
+| Borrar logs del servidor | Acceso root/shell al servidor | No (otro ataque aparte) |
+| Borrar logs del ISP | Imposible para el atacante | No |
+
 ## 4. Por qué el rastro nunca desaparece del todo
 
 El anonimato del atacante es **probabilístico, no absoluto**. Cada capa sube el
