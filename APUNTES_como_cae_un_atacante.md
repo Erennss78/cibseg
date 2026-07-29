@@ -123,3 +123,46 @@ Vos -> [Nodo de entrada] -> [Nodo intermedio] -> [Nodo de salida] -> Destino
 
 **Usos legítimos:** periodistas, activistas, gente bajo censura, o simplemente
 privacidad. Tor no es ilegal — es una herramienta; el uso define la intención.
+
+### Configuración de Tor: qué sirve y qué te delata
+
+- **Nivel de seguridad del navegador (escudo):** Standard / Safer / Safest.
+  Subirlo desactiva JavaScript (vía común de desanonimización). *Sirve* — muchos
+  ataques reales a usuarios de Tor fueron por JS, no por romper Tor.
+- **Bridges (puentes):** nodos de entrada no listados, para *entrar* a Tor donde
+  está bloqueado. No dan más anonimato, solo evitan la censura.
+- **Pluggable transports (obfs4, meek, snowflake):** disfrazan el tráfico para
+  que **no parezca Tor**. Camuflaje de la conexión, no anonimato extra.
+- **torrc (avanzado):** archivo de config; forzar países de salida, puertos, etc.
+
+**Regla clave:** casi ninguna personalización te hace *más* anónimo, y varias te
+hacen **menos**. Si agregás extensiones, maximizás la ventana o cambiás fuentes,
+te volvés **único** → más rastreable por *fingerprinting*. La gracia de Tor es que
+todos los usuarios se vean **iguales**; tunearlo rompe eso. El default es el óptimo.
+
+> Sabu (LulzSec) no cayó por config: su Tor funcionaba. Cayó porque entró **una
+> vez sin Tor**. Ninguna configuración salva de un error humano.
+
+### Cómo un atacante *opera* Tor (y sus fugas)
+
+Dos formas de usarlo:
+1. **Tor Browser** — protege solo lo que pasa por esa ventana.
+2. **Tor como proxy SOCKS** (`127.0.0.1:9050`) — rutea el tráfico de **cualquier**
+   programa. Es lo que usa un atacante para que su herramienta salga por Tor.
+   Se hace con envoltorios externos: **proxychains** o **torsocks**
+   (`proxychains python3 herramienta.py`). A veces encadenan **VPN → Tor**.
+
+**Fugas frecuentes (por qué "usar Tor" mal no alcanza):**
+- **DNS leak:** si el programa resuelve el dominio *fuera* de Tor, el ISP ve a
+  qué sitio ibas aunque el tráfico vaya por Tor. Por eso se usa torsocks/proxychains
+  bien configurado, que fuerza también el DNS por Tor.
+- **Contenido sin HTTPS:** el nodo de salida lo lee. Nunca datos sensibles sin HTTPS.
+- **Correlación temporal:** un adversario global cruza entrada y salida por el
+  timing. Caro (nivel Estado), pero real.
+- **Usar Tor deja huella:** los nodos de salida son IPs **públicas y listadas**;
+  un defensor detecta "esto viene de Tor" aunque no sepa quién. Anonimato ≠ sigilo.
+
+**Idea de fondo:** Tor es el **sobre**, no el ataque. El exploit es el mismo; Tor
+solo cambia el remitente. Por eso el defensor no intenta romper Tor (inútil):
+detecta el **patrón del ataque** en los logs y correlaciona con el mundo físico,
+que Tor no toca.
